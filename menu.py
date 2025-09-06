@@ -1,8 +1,7 @@
 import controldegastos
 import ingresos
 
-def seleccionar_opcion():
- 
+def imprimir_menu():
   opciones = [
       "Salir",                                # 0
       "Registrar gasto",                      # 1
@@ -17,16 +16,22 @@ def seleccionar_opcion():
       "Buscar ingresos por fecha",            # 10
       "Mostrar resumen mensual de gastos",    # 11
       "Mostrar resumen mensual de ingresos"   # 12
+      #"Mostrar Menú"                         # 99
   ]
 
   for i in range(1, len(opciones)):
     print(f"{i} - {opciones[i]}")
   print(f"0 - {opciones[0]}")
+  print(f"99 - Imprimir menú")
+
+def seleccionar_opcion():
+ 
+  imprimir_menu()
 
   while True:
     try: 
     
-      opcion = int(input("Seleccione una opción: "))
+      opcion = int(input("Seleccione una opción (99 para mostrar el menú): "))
       
       match opcion:
         case 1:
@@ -148,6 +153,9 @@ def seleccionar_opcion():
         # SALIR
           print("Saliendo del sistema...")
           break
+
+        case 99:
+          imprimir_menu()
 
         case _:
           print("Opcion no valida, ingrese nuevamente")
