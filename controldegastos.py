@@ -18,6 +18,7 @@ def registrar_gasto(monto, fecha, categoria):
   try:
     monto = float(monto)
 
+    categoria = categoria.capitalize()
     if categoria not in categorias:
       raise ValueError("Categoría no válida")
 
@@ -43,13 +44,6 @@ def mostrar_gastos():
   else:
     print("Sin gastos registrados al momento")
 
-
-def buscar_por_fecha(fecha):
-    """Devuelve los gastos de una fecha específica"""
-    encontrados = list(filter(lambda g: g[1] == fecha, gastos))
-    return encontrados
-
-
 def buscar_por_id(id):
   """Devuelve un gasto por su índice"""
   try:
@@ -62,6 +56,30 @@ def buscar_por_id(id):
   except ValueError:
     print(f"Error: Ingrese un valor válido.")
     return False
+
+def buscar_gastos():
+  if not gastos:
+    print("No hay gastos todavía")
+    return
+  op = input("Buscar por (1) categoría, (2) fecha o (3) ID: ")
+  if op == "1":
+    cat = input("Categoría: ").strip().capitalize()
+    filtrados = [g for g in gastos if g[2] == cat]
+    for g in filtrados:
+      print(f"${g[0]:.2f} | {g[1]} | {g[2]}")
+  elif op == "2":
+    f = input("Fecha (dd/mm/aaaa): ").strip()
+    filtrados = [g for g in gastos if g[1] == f]
+    for g in filtrados:
+      print(f"${g[0]:.2f} | {g[1]} | {g[2]}")
+  elif op == "3":
+    id = int(input("Ingrese el ID del gasto: "))
+    resultado = buscar_por_id(id)
+
+    if resultado:
+      print(f"{id}. {resultado[1]} - {resultado[2]}: ${resultado[0]:.2f}")
+    else:
+      print(f"No existe gasto con id {id}")
 
 
 def top_gastos():

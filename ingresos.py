@@ -10,8 +10,11 @@ ingresos = [
 def registrar_ingreso(monto, fecha, categoria):
     try:
         monto = float(monto)
+        
+        categoria = categoria.capitalize()
         if categoria not in categorias:
             raise ValueError("Categoría no válida")
+    
         ingreso = [monto, fecha, categoria]
         ingresos.append(ingreso)
         print(f"Ingreso registrado con éxito: {ingreso}")
