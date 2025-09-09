@@ -18,6 +18,9 @@ def registrar_gasto(monto, fecha, categoria):
   try:
     monto = float(monto)
 
+    if monto < 0:
+      raise ValueError("Monto no válido")
+
     categoria = categoria.capitalize()
     if categoria not in categorias:
       raise ValueError("Categoría no válida")

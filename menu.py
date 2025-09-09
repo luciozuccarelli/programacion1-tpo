@@ -35,6 +35,9 @@ def seleccionar_opcion():
           while True:
             try:
               monto = float(input("Ingrese el monto del gasto: "))
+              if monto < 0:
+                print("Monto no válido")
+                break
               
               fecha = fechas.ingresar_fecha("Ingrese la fecha (dd/mm/yyyy):")
 
@@ -108,14 +111,19 @@ def seleccionar_opcion():
           ingresos.mostrar_ingresos()
 
         case 9:
-        # MOSTRAR RESUMEN MENSUAL DE GASTOS
-          mes = input("Ingrese el mes (mm/yyyy): ")
-          controldegastos.generar_resumen_mensual(mes)
+        # BUSCAR INGRESOS POR FECHA
+          fecha = input("Ingrese la fecha a buscar (dd/mm/yyyy): ")
+          resultados = ingresos.buscar_por_fecha(fecha)
+
+          if resultados:
+            print(f"\n Ingresos del {fecha}:")
+            for i in resultados:
+              print(f"- {i[2]}: ${i[0]:.2f}")
 
         case 10:
         # MOSTRAR RESUMEN MENSUAL DE GASTOS
           mes = input("Ingrese el mes (mm/yyyy): ")
-          ingresos.generar_resumen_mensual(mes)
+          controldegastos.generar_resumen_mensual(mes)
 
         case 11:
         # MOSTRAR RESUMEN MENSUAL DE INGRESOS
