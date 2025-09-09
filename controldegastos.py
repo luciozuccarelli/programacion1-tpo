@@ -28,7 +28,7 @@ def registrar_gasto(monto, fecha, categoria):
     #los 3 datos los ingresamos en una lista
     gasto = [monto, fecha, categoria]
 
-    #creo una lista de listas con los 3 datos anteriores
+    # creo una lista de listas con los 3 datos anteriores
     gastos.append(gasto)
 
     print(f"Gasto registrado con éxito: {gasto[0]}, {gasto[1]}, {gasto[2]}")
