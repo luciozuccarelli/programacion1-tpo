@@ -1,3 +1,5 @@
+# Federico Ellena
+
 CATEGORIAS_GASTOS = [
     "Comida", "Transporte", "Servicios", "Entretenimiento",
     "Salud", "Educación", "Inversiones"
@@ -36,13 +38,26 @@ def mostrar_gastos(gastos):
         print(f"{i}. {g[1]} - {g[2]}: ${g[0]:.2f}")
 
 
-def eliminar_gasto(gastos, idx):
-    """Elimina un gasto por índice."""
-    try:
-        eliminado = gastos.pop(idx)
-        print(f"Gasto eliminado: {eliminado}")
-    except IndexError:
-        print("ID no válido.")
+def eliminar_gasto(gastos, numero):
+    """
+    Elimina un gasto por su número en la lista (el que se muestra a la izquierda).
+
+    Args:
+        gastos (list): lista de gastos.
+        numero (int): número mostrado en la lista (0, 1, 2, ...).
+    """
+    if not isinstance(numero, int):
+        try:
+            numero = int(numero)
+        except Exception:
+            print("Número inválido.")
+            return gastos
+
+    if 0 <= numero < len(gastos):
+        eliminado = gastos.pop(numero)
+        print(f"Gasto eliminado: {eliminado[1]} - {eliminado[2]}: ${eliminado[0]:.2f}")
+    else:
+        print("Número inválido.")
     return gastos
 
 

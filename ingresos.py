@@ -1,3 +1,4 @@
+
 CATEGORIAS_INGRESOS = ["Sueldo", "Ventas", "Inversiones", "Otros"]
 
 

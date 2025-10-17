@@ -1,3 +1,5 @@
+from datetime import date
+
 def ingresar_fecha(mensaje):
     """
     Solicita y valida una fecha en formato dd/mm/yyyy.
@@ -35,6 +37,16 @@ def ingresar_fecha(mensaje):
 
         if dia < 1 or dia > dias_por_mes[mes - 1]:
             print(f"El mes {mes} tiene máximo {dias_por_mes[mes - 1]} días.")
+            continue
+
+        try:
+            ingresada = date(anio, mes, dia)
+        except ValueError:
+            print("Fecha inválida.")
+            continue
+
+        if ingresada > date.today():
+            print("La fecha no puede ser futura.")
             continue
 
         return f"{dia:02d}/{mes:02d}/{anio}"
