@@ -1,63 +1,69 @@
-categorias = ["Sueldo", "Ventas", "Inversiones", "Otros"]
-
-# Datos iniciales
-ingresos = [
-  [150000.00, "01/08/2025", "Sueldo"],
-  [20000.00, "05/08/2025", "Ventas"]
-]
+CATEGORIAS_INGRESOS = ["Sueldo", "Ventas", "Inversiones", "Otros"]
 
 
-def registrar_ingreso(monto, fecha, categoria):
-    try:
-        monto = float(monto)
-        
-        categoria = categoria.capitalize()
-        if categoria not in categorias:
-            raise ValueError("Categoría no válida")
-    
-        ingreso = [monto, fecha, categoria]
-        ingresos.append(ingreso)
-        print(f"Ingreso registrado con éxito: {ingreso}")
-    except ValueError:
-        print(f"Error: El valor ingresado no es válido")
-
-def mostrar_ingresos():
-    if ingresos:
-        print("Lista de ingresos:")
-        for i, ing in enumerate(ingresos):
-            print(f"{i}. {ing[1]} - {ing[2]}: ${ing[0]:.2f}")
-    else:
-        print("Sin ingresos registrados al momento")
+def mostrar_menu_categorias_ingreso():
+    """Imprime el menú numerado de categorías de ingreso."""
+    print("\nSeleccione una categoría de ingreso:")
+    for i, cat in enumerate(CATEGORIAS_INGRESOS, start=1):
+        print(f"{i}. {cat}")
 
 
-def buscar_por_fecha(fecha):
-    return list(filter(lambda i: i[1] == fecha, ingresos))
+def seleccionar_categoria_ingreso():
+    """Devuelve una categoría válida elegida por el usuario mediante un menú."""
+    while True:
+        mostrar_menu_categorias_ingreso()
+        opcion = input(f"Opción (1-{len(CATEGORIAS_INGRESOS)}): ").strip()
 
-def generar_resumen_mensual(mes):
-    """Genera un resumen de los ingresos de un mes específico (mm/yyyy)"""
+        if opcion.isdigit():
+            idx = int(opcion)
+            if 1 <= idx <= len(CATEGORIAS_INGRESOS):
+                return CATEGORIAS_INGRESOS[idx - 1]
 
-    resumen = [[cat, 0] for cat in categorias]
-    total_general = 0
+        print("Opción inválida. Intente nuevamente.\n")
 
-    for i in ingresos:
-        if i[1][3:] == mes:
-            for fila in resumen:
-                if fila[0] == i[2]:
-                    fila[1] += i[0]
-                    break
-            total_general += i[0]
 
-    print(f"\n Resumen de ingresos - {mes}")
-    print("-" *40)
-    print(f"{'Categoría':<20} | {'Monto ($)':>10}")
-    print("-" *40)
+def registrar_ingreso(ingresos, monto, fecha, categoria):
+    """
+    Registra un nuevo ingreso.
 
-    for fila in resumen:
-        if fila[1] > 0:
-            print(f"{fila[0]:<20} | {fila[1]:>10.2f}")
+    Args:
+        ingresos (list): lista de ingresos actual.
+        monto (float): monto del ingreso.
+        fecha (str): fecha.
+        categoria (str): tipo de ingreso.
+    """
+    categoria = categoria.capitalize()
+    if categoria not in CATEGORIAS_INGRESOS:
+        raise ValueError("Categoría no válida.")
 
-    print("-" *40)
-    print(f"{'TOTAL':<20} | {total_general:>10.2f}")
-    print("-" *40)
+    ingreso = [monto, fecha, categoria]
+    ingresos.append(ingreso)
+    return ingresos
 
-    return resumen, total_general
+
+def mostrar_ingresos(ingresos):
+    """Imprime los ingresos actuales."""
+    if not ingresos:
+        print("No hay ingresos registrados.")
+        return
+    print("\nLista de ingresos:")
+    for i, ing in enumerate(ingresos):
+        print(f"{i}. {ing[1]} - {ing[2]}: ${ing[0]:.2f}")
+
+
+def resumen_mensual(ingresos, mes):
+    """Muestra resumen mensual de ingresos."""
+    resumen = {cat: 0 for cat in CATEGORIAS_INGRESOS}
+    total = 0
+    for monto, fecha, categoria in ingresos:
+        if fecha[3:] == mes:
+            resumen[categoria] += monto
+            total += monto
+
+    print(f"\nResumen de ingresos - {mes}")
+    print("-" * 35)
+    for cat, monto in resumen.items():
+        if monto > 0:
+            print(f"{cat:<20} ${monto:>10.2f}")
+    print("-" * 35)
+    print(f"{'TOTAL':<20} ${total:>10.2f}")

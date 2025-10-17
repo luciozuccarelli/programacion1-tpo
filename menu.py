@@ -1,145 +1,100 @@
-import controldegastos
-import ingresos
-import fechas
+from fechas import ingresar_fecha
+from gastos import (
+    registrar_gasto, mostrar_gastos, eliminar_gasto, resumen_mensual, CATEGORIAS_GASTOS
+)
+from ingresos import (
+    registrar_ingreso, mostrar_ingresos, resumen_mensual as resumen_ingresos,
+    CATEGORIAS_INGRESOS
+)
+from persistencia import guardar_datos, registrar_evento
 
-def imprimir_menu():
-  opciones = [
-      "Salir",                                # 0
-      "Registrar gasto",                      # 1
-      "Mostrar todos los gastos",             # 2
-      "Buscar gastos",                        # 3
-      "Top de gastos",                        # 4
-      "Eliminar gasto",                       # 5
-      "Modificar gasto",                      # 6
-      "Registrar ingreso",                    # 7
-      "Mostrar ingresos",                     # 8
-      "Buscar ingresos por fecha",            # 9
-      "Mostrar resumen mensual de gastos",    # 10
-      "Mostrar resumen mensual de ingresos"   # 11
-  ]
 
-  for i in range(1, len(opciones)):
-    print(f"{i} - {opciones[i]}")
-  print(f"0 - {opciones[0]}")
+def _mostrar_menu(opciones, titulo):
+    """Imprime un menú numerado simple."""
+    print(f"\n{titulo}:")
+    for i, texto in enumerate(opciones, start=1):
+        print(f"{i}. {texto}")
 
-def seleccionar_opcion():
 
-  while True:
-    try: 
-      imprimir_menu()
-      opcion = int(input("Seleccione una opción: "))
-      
-      match opcion:
-        case 1:
-        # REGISTRAR GASTO
-          while True:
+def _elegir_de_menu(opciones, etiqueta="Opción"):
+    """Pide una opción hasta que sea válida y devuelve el texto elegido."""
+    while True:
+        _mostrar_menu(opciones, "Seleccione una opción")
+        entrada = input(f"{etiqueta} (1-{len(opciones)}): ").strip()
+        if entrada.isdigit():
+            n = int(entrada)
+            if 1 <= n <= len(opciones):
+                return opciones[n - 1]
+        print("Opción inválida. Intente nuevamente.\n")
+
+
+def menu_principal(gastos, ingresos):
+    while True:
+        print("\n=== SISTEMA DE GESTIÓN FINANCIERA ===")
+        print("1 - Registrar gasto")
+        print("2 - Mostrar gastos")
+        print("3 - Eliminar gasto")
+        print("4 - Resumen mensual de gastos")
+        print("5 - Registrar ingreso")
+        print("6 - Mostrar ingresos")
+        print("7 - Resumen mensual de ingresos")
+        print("0 - Salir")
+
+        try:
+            opcion = int(input("Seleccione una opción: "))
+        except ValueError:
+            print("Opción no válida.")
+            continue
+
+        if opcion == 0:
+            guardar_datos("gastos.txt", gastos)
+            guardar_datos("ingresos.txt", ingresos)
+            print("Datos guardados. Saliendo...")
+            break
+
+        elif opcion == 1:
             try:
-              monto = float(input("Ingrese el monto del gasto: "))
-              if monto < 0:
-                print("Monto no válido")
-                break
-              
-              fecha = fechas.ingresar_fecha("Ingrese la fecha (dd/mm/yyyy):")
+                monto = float(input("Monto del gasto: "))
+                fecha = ingresar_fecha("Fecha (dd/mm/yyyy): ")
+                categoria = _elegir_de_menu(CATEGORIAS_GASTOS, "Categoría")
+                gastos = registrar_gasto(gastos, monto, fecha, categoria)
+                print(" Gasto registrado correctamente.")
+            except Exception as e:
+                print(f"Error: {e}")
+                registrar_evento(f"Error registrando gasto: {e}")
 
-              print("Categorias disponibles: ", controldegastos.categorias)
-              categoria = input("Ingrese la categoría: ")
+        elif opcion == 2:
+            mostrar_gastos(gastos)
 
-              controldegastos.registrar_gasto(monto, fecha, categoria)
-
-              seguir = input("¿Desea registrar otro gasto? (si/no): ")
-              if seguir.lower() != "si":
-                break
-            except:
-              print("Valor ingresado no válido")
-        case 2:
-        # MOSTRAR LISTA DE GASTOS
-          controldegastos.mostrar_gastos()
-
-        case 3:
-        # MOSTRAR LISTA DE GASTOS
-          controldegastos.buscar_gastos()
-
-        case 4:
-        # TOP GASTOS
-          n = int(input("¿Cuántos gastos quiere ver en el top? "))
-          if(n > 0):
-            ordenados = controldegastos.top_gastos()
-
-            print(f"\nTop {n} gastos más altos:")
-            for i, g in enumerate(ordenados[:n], 1):
-              print(f"{i}. {g[1]} - {g[2]}: ${g[0]:.2f}")
-          else:
-            print("El numero ingresado no es válido.")
-
-        case 5:
-        # ELIMINAR UN GASTO POR ID
-          controldegastos.mostrar_gastos()
-
-          gasto_id = int(input("Ingrese el ID del gasto a eliminar: "))
-          controldegastos.eliminar_gasto(gasto_id)
-
-        case 6:
-        # MODIFICAR GASTO
-          controldegastos.mostrar_gastos()
-
-          gasto_id = int(input("Ingrese el ID del gasto a modificar: "))
-          nuevo_monto = float(input("Nuevo monto: "))
-          nueva_fecha = input("Nueva fecha (dd/mm/yyyy): ")
-          nueva_categoria = input("Nueva categoría: ")
-          controldegastos.modificar_gasto(gasto_id, nuevo_monto, nueva_fecha, nueva_categoria)
-
-        case 7:
-        # REGISTRAR INGRESO
-          while True:
+        elif opcion == 3:
+            mostrar_gastos(gastos)
             try:
-              monto = float(input("Ingrese el monto del ingreso: "))
-              fecha = fechas.ingresar_fecha("Ingrese la fecha (dd/mm/yyyy): ")
+                idx = int(input("ID a eliminar: "))
+                gastos = eliminar_gasto(gastos, idx)
+            except Exception as e:
+                print(f"Error: {e}")
+                registrar_evento(f"Error eliminando gasto: {e}")
 
-              print("Categorias disponibles: ", ingresos.categorias)
-              categoria = input("Ingrese la categoría: ")
+        elif opcion == 4:
+            mes = input("Mes (mm/yyyy): ")
+            resumen_mensual(gastos, mes)
 
-              ingresos.registrar_ingreso(monto, fecha, categoria)
+        elif opcion == 5:
+            try:
+                monto = float(input("Monto del ingreso: "))
+                fecha = ingresar_fecha("Fecha (dd/mm/yyyy): ")
+                categoria = _elegir_de_menu(CATEGORIAS_INGRESOS, "Categoría")
+                ingresos = registrar_ingreso(ingresos, monto, fecha, categoria)
+                print(" Ingreso registrado correctamente.")
+            except Exception as e:
+                print(f"Error: {e}")
+                registrar_evento(f"Error registrando ingreso: {e}")
 
-              seguir = input("¿Desea registrar otro ingreso? (si/no): ")
-              if seguir.lower() != "si":
-                break
-            except ValueError:
-              print("Valor ingresado no válido.")
+        elif opcion == 6:
+            mostrar_ingresos(ingresos)
 
-        case 8:
-        # MOSTRAR LISTA DE INGRESOS
-          ingresos.mostrar_ingresos()
-
-        case 9:
-        # BUSCAR INGRESOS POR FECHA
-          fecha = input("Ingrese la fecha a buscar (dd/mm/yyyy): ")
-          resultados = ingresos.buscar_por_fecha(fecha)
-
-          if resultados:
-            print(f"\n Ingresos del {fecha}:")
-            for i in resultados:
-              print(f"- {i[2]}: ${i[0]:.2f}")
-
-        case 10:
-        # MOSTRAR RESUMEN MENSUAL DE GASTOS
-          mes = input("Ingrese el mes (mm/yyyy): ")
-          controldegastos.generar_resumen_mensual(mes)
-
-        case 11:
-        # MOSTRAR RESUMEN MENSUAL DE INGRESOS
-          mes = input("Ingrese el mes (mm/yyyy): ")
-          ingresos.generar_resumen_mensual(mes)
-
-        case 0:
-        # SALIR
-          print("Saliendo del sistema...")
-          break
-
-        case 99:
-          imprimir_menu()
-
-        case _:
-          print("Opcion no valida, ingrese nuevamente")
-
-    except ValueError:
-      print(f"Error: Valor ingresado no valido.")
+        elif opcion == 7:
+            mes = input("Mes (mm/yyyy): ")
+            resumen_ingresos(ingresos, mes)
+        else:
+            print("Opción no válida.")

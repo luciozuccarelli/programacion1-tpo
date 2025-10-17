@@ -1,0 +1,6 @@
+Error eliminando gasto: invalid literal for int() with base 10: 'ty'
+Error registrando gasto: could not convert string to float: 'f'
+Error registrando gasto: Categoría no válida.
+Error registrando gasto: Categoría no válida.
+Error registrando gasto: Categoría no válida.
+Error registrando gasto: Categoría no válida.
