@@ -1,83 +1,67 @@
 from datetime import date
 
-def ingresar_fecha(mensaje):
+def ingresar_valor(mensaje, minimo=None, maximo=None):
     """
-    Solicita y valida una fecha en formato dd/mm/yyyy.
-
-    Args:
-        mensaje (str): texto que se muestra al usuario.
-
-    Returns:
-        str: fecha validada en formato dd/mm/yyyy.
+    Pide un entero con un mensaje y valida rango si corresponde.
+    Devuelve el entero válido.
     """
     while True:
-        fecha = input(mensaje).strip()
-        partes = fecha.split("/")
-
-        if len(partes) != 3:
-            print("Formato inválido. Usa dd/mm/yyyy.")
+        s = input(mensaje).strip()
+        if not s.isdigit():
+            print("Debe ingresar solo números.")
             continue
-
-        dia, mes, anio = partes
-        if not (dia.isdigit() and mes.isdigit() and anio.isdigit()):
-            print("La fecha debe tener solo números.")
+        n = int(s)
+        if minimo is not None and n < minimo:
+            print(f"El valor no puede ser menor que {minimo}.")
             continue
-
-        dia, mes, anio = int(dia), int(mes), int(anio)
-        if anio < 1900 or anio > 2100:
-            print("Año fuera de rango.")
+        if maximo is not None and n > maximo:
+            print(f"El valor no puede ser mayor que {maximo}.")
             continue
-        if mes < 1 or mes > 12:
-            print("Mes inválido.")
-            continue
+        return n
 
+
+def ingresar_fecha():
+    """
+    Solicita y valida una fecha pidiendo día, mes y año por separado.
+    Devuelve la fecha en formato dd/mm/yyyy.
+    """
+    while True:
+        # pedir fechas con topes genericos
+        dia = ingresar_valor("Ingrese el dia: ", 1, 31)
+        mes = ingresar_valor("Ingrese el mes: ", 1, 12)
+        anio = ingresar_valor("Ingrese el anio: ", 1900, 2100)
+
+        # esto considera los años bisiestos
         dias_por_mes = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
         if (anio % 4 == 0 and anio % 100 != 0) or (anio % 400 == 0):
             dias_por_mes[1] = 29
 
-        if dia < 1 or dia > dias_por_mes[mes - 1]:
-            print(f"El mes {mes} tiene máximo {dias_por_mes[mes - 1]} días.")
-            continue
+        max_dia = dias_por_mes[mes - 1]
+        if dia > max_dia:
+            print(f"El mes {mes} tiene máximo {max_dia} días. Reingrese el día.")
+            # vuelve a pedir solo el día con el tope correcto
+            dia = ingresar_valor(f"Ingrese el dia (1-{max_dia}): ", 1, max_dia)
 
+        # valida que no se ingresen fechas futuras
         try:
             ingresada = date(anio, mes, dia)
         except ValueError:
-            print("Fecha inválida.")
+            print("Fecha inválida. Ingrese una fecha válida.\n")
             continue
 
         if ingresada > date.today():
-            print("La fecha no puede ser futura.")
+            print("La fecha no puede ser futura. Ingrese una fecha válida.\n")
             continue
 
         return f"{dia:02d}/{mes:02d}/{anio}"
 
 
-def ingresar_periodo(mensaje):
+def ingresar_periodo():
     """
-    Solicita y valida un periodo mm/yyyy.
-
-    Args:
-        mensaje (str): texto que se muestra al usuario.
-
-    Returns:
-        str: periodo validado en formato mm/yyyy.
+    Solicita y valida un período pidiendo mes y año por separado.
+    Devuelve el período en formato mm/yyyy.
     """
     while True:
-        fecha = input(mensaje).strip()
-        partes = fecha.split("/")
-        if len(partes) != 2:
-            print("Formato inválido. Usa mm/yyyy.")
-            continue
-        mes, anio = partes
-        if not (mes.isdigit() and anio.isdigit()):
-            print("La fecha debe tener solo números.")
-            continue
-        mes, anio = int(mes), int(anio)
-        if anio < 1900 or anio > 2100:
-            print("Año fuera de rango.")
-            continue
-        if mes < 1 or mes > 12:
-            print("Mes inválido.")
-            continue
-
+        mes = ingresar_valor("Ingrese el mes: ", 1, 12)
+        anio = ingresar_valor("Ingrese el anio: ", 1900, 2100)
         return f"{mes:02d}/{anio}"

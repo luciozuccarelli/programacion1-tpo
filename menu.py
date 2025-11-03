@@ -7,6 +7,7 @@ from ingresos import (
     CATEGORIAS_INGRESOS
 )
 from persistencia import guardar_datos, registrar_evento
+from utilidades import validar_monto
 
 
 def _mostrar_menu(opciones, titulo):
@@ -54,8 +55,8 @@ def menu_principal(gastos, ingresos):
 
         elif opcion == 1:
             try:
-                monto = float(input("Monto del gasto: "))
-                fecha = ingresar_fecha("Fecha (dd/mm/yyyy): ")
+                monto = validar_monto("Monto del gasto: ")
+                fecha = ingresar_fecha()
                 categoria = _elegir_de_menu(CATEGORIAS_GASTOS, "Categoría")
                 gastos = registrar_gasto(gastos, monto, fecha, categoria)
                 print(" Gasto registrado correctamente.")
@@ -76,13 +77,13 @@ def menu_principal(gastos, ingresos):
                 registrar_evento(f"Error eliminando gasto: {e}")
 
         elif opcion == 4:
-            fecha = ingresar_periodo("Periodo (mm/yyyy):")
+            fecha = ingresar_periodo()
             resumen_mensual(gastos, fecha)
 
         elif opcion == 5:
             try:
                 monto = float(input("Monto del ingreso: "))
-                fecha = ingresar_fecha("Fecha (dd/mm/yyyy): ")
+                fecha = ingresar_fecha()
                 categoria = _elegir_de_menu(CATEGORIAS_INGRESOS, "Categoría")
                 ingresos = registrar_ingreso(ingresos, monto, fecha, categoria)
                 print(" Ingreso registrado correctamente.")

@@ -4,3 +4,6 @@ Error registrando gasto: Categoría no válida.
 Error registrando gasto: Categoría no válida.
 Error registrando gasto: Categoría no válida.
 Error registrando gasto: Categoría no válida.
+Error registrando gasto: ingresar_fecha() takes 0 positional arguments but 1 was given
+Error registrando gasto: could not convert string to float: '12342f'
+Error registrando gasto: could not convert string to float: 'dlgjkf'
