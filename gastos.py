@@ -75,7 +75,9 @@ def resumen_mensual(gastos, mes):
         if fecha[3:] == mes:
             resumen[categoria] += monto
             total += monto
-
+    if total == 0:
+        print('No hay gastos para el período especificado')
+        return
     print(f"\nResumen de gastos - {mes}")
     print("-" * 35)
     for cat, monto in resumen.items():

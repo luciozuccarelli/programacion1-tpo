@@ -1,4 +1,4 @@
-from fechas import ingresar_fecha
+from fechas import (ingresar_fecha, ingresar_periodo)
 from gastos import (
     registrar_gasto, mostrar_gastos, eliminar_gasto, resumen_mensual, CATEGORIAS_GASTOS
 )
@@ -76,8 +76,8 @@ def menu_principal(gastos, ingresos):
                 registrar_evento(f"Error eliminando gasto: {e}")
 
         elif opcion == 4:
-            mes = input("Mes (mm/yyyy): ")
-            resumen_mensual(gastos, mes)
+            fecha = ingresar_periodo("Periodo (mm/yyyy):")
+            resumen_mensual(gastos, fecha)
 
         elif opcion == 5:
             try:

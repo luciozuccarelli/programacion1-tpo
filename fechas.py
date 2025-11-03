@@ -50,3 +50,34 @@ def ingresar_fecha(mensaje):
             continue
 
         return f"{dia:02d}/{mes:02d}/{anio}"
+
+
+def ingresar_periodo(mensaje):
+    """
+    Solicita y valida un periodo mm/yyyy.
+
+    Args:
+        mensaje (str): texto que se muestra al usuario.
+
+    Returns:
+        str: periodo validado en formato mm/yyyy.
+    """
+    while True:
+        fecha = input(mensaje).strip()
+        partes = fecha.split("/")
+        if len(partes) != 2:
+            print("Formato inválido. Usa mm/yyyy.")
+            continue
+        mes, anio = partes
+        if not (mes.isdigit() and anio.isdigit()):
+            print("La fecha debe tener solo números.")
+            continue
+        mes, anio = int(mes), int(anio)
+        if anio < 1900 or anio > 2100:
+            print("Año fuera de rango.")
+            continue
+        if mes < 1 or mes > 12:
+            print("Mes inválido.")
+            continue
+
+        return f"{mes:02d}/{anio}"
